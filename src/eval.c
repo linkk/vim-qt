@@ -14629,7 +14629,7 @@ remote_common(argvars, rettv, expr)
     char_u	*keys;
     char_u	*r = NULL;
     char_u	buf[NUMBUFLEN];
-# ifdef WIN32
+# if defined(WIN32) || defined(FEAT_GUI_QT)
     HWND	w;
 # else
     Window	w;
@@ -14647,7 +14647,7 @@ remote_common(argvars, rettv, expr)
     if (server_name == NULL)
 	return;		/* type error; errmsg already given */
     keys = get_tv_string_buf(&argvars[1], buf);
-# ifdef WIN32
+# if defined(WIN32) || defined(FEAT_GUI_QT)
     if (serverSendToVim(server_name, keys, &r, &w, expr, TRUE) < 0)
 # else
     if (serverSendToVim(X_DISPLAY, server_name, keys, &r, &w, expr, 0, TRUE)
@@ -14731,7 +14731,7 @@ f_remote_peek(argvars, rettv)
 #ifdef FEAT_CLIENTSERVER
     dictitem_T	v;
     char_u	*s = NULL;
-# ifdef WIN32
+# if defined(WIN32) || defined(FEAT_GUI_QT)
     long_u	n = 0;
 # endif
     char_u	*serverid;
@@ -14747,7 +14747,7 @@ f_remote_peek(argvars, rettv)
 	rettv->vval.v_number = -1;
 	return;		/* type error; errmsg already given */
     }
-# ifdef WIN32
+# if defined(WIN32) || defined(FEAT_GUI_QT)
     sscanf(serverid, SCANF_HEX_LONG_U, &n);
     if (n == 0)
 	rettv->vval.v_number = -1;
@@ -14792,7 +14792,7 @@ f_remote_read(argvars, rettv)
 
     if (serverid != NULL && !check_restricted() && !check_secure())
     {
-# ifdef WIN32
+# if defined(WIN32) || defined(FEAT_GUI_QT)
 	/* The server's HWND is encoded in the 'id' parameter */
 	long_u		n = 0;
 
@@ -15803,7 +15803,7 @@ f_serverlist(argvars, rettv)
     char_u	*r = NULL;
 
 #ifdef FEAT_CLIENTSERVER
-# ifdef WIN32
+# if defined(WIN32) || defined(FEAT_GUI_QT)
     r = serverGetVimNames();
 # else
     make_connection();
