@@ -365,4 +365,14 @@ QString VimWrapper::convertFrom(const char *s, int size)
 	}
 }
 
+char_u* VimWrapper::copy(const QByteArray& b)
+{
+	if ( b.length() == 0 ) {
+		return NULL;
+	}
+	char_u *buffer = alloc(b.length());
+
+	memcpy(buffer, b.constData(), b.length());
+	return buffer;
+}
 

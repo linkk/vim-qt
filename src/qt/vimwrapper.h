@@ -67,7 +67,7 @@ public:
 
 	static QByteArray convertTo(const QString& s);
 	static QString convertFrom(const char *, int size=-1);
-
+	static char_u* copy(const QByteArray&);
 
 	/**
 	 * Vim methods
