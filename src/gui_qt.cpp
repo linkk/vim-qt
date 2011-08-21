@@ -491,13 +491,12 @@ gui_mch_init()
 		styleFile.close();
 	}
 
-	// Clipboard - the order matters, for safety
-	clip_plus.clipboardMode = QClipboard::Selection;
-	clip_star.clipboardMode = QClipboard::Clipboard;
+	// Clipboard
+	clip_plus.clipboardMode = QClipboard::Clipboard;
+	clip_star.clipboardMode = QClipboard::Selection;
 
 	QObject::connect(QApplication::clipboard(), SIGNAL(changed(QClipboard::Mode)),
 			vimshell, SLOT(clipboardChanged(QClipboard::Mode)));
-
 
 	display_errors();
 
@@ -715,7 +714,15 @@ gui_mch_init_check()
 int
 clip_mch_own_selection(VimClipboard *cbd)
 {
-	return OK;
+	if ( cbd->clipboardMode == QClipboard::Selection ) {
+		return QApplication::clipboard()->ownsSelection() ? OK : FAIL;
+	}
+
+	if ( cbd->clipboardMode == QClipboard::Clipboard ) {
+		return QApplication::clipboard()->ownsClipboard() ? OK : FAIL;
+	}
+
+	return FAIL;
 }
 
 /**
@@ -724,7 +731,6 @@ clip_mch_own_selection(VimClipboard *cbd)
 void
 clip_mch_lose_selection(VimClipboard *cbd)
 {
-	qDebug() << __func__;
 }
 
 /**
@@ -762,6 +768,10 @@ clip_mch_request_selection(VimClipboard *cbd)
 	}
 
 	QByteArray text = VimWrapper::convertTo(clip->text( (QClipboard::Mode)cbd->clipboardMode));
+
+	if ( text.length() == 0 ) {
+		return;
+	}
 
 	char_u	*buffer;
 	buffer = lalloc( text.size(), TRUE);

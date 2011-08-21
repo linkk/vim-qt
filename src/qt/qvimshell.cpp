@@ -620,13 +620,14 @@ void QVimShell::tooltip(const QString& text)
  */
 void QVimShell::clipboardChanged(QClipboard::Mode mode)
 {
-	switch(mode) {
-	case QClipboard::Clipboard:
+	QClipboard *clip = QApplication::clipboard();
+
+	if ( mode == QClipboard::Clipboard &&
+			!clip->ownsClipboard() ) {
 		clip_star.owned = FALSE;
-		break;
-	case QClipboard::Selection:
+	} else if ( mode == QClipboard::Selection &&
+			!clip->ownsSelection() ) {
 		clip_plus.owned = FALSE;
-		break;
 	}
 }
 
