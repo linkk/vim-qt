@@ -622,12 +622,14 @@ void QVimShell::clipboardChanged(QClipboard::Mode mode)
 {
 	QClipboard *clip = QApplication::clipboard();
 
+	qDebug() << __func__ << mode  << clip->text(mode) ;
+
 	if ( mode == QClipboard::Clipboard &&
 			!clip->ownsClipboard() ) {
-		clip_star.owned = FALSE;
+		clip_plus.owned = FALSE;
 	} else if ( mode == QClipboard::Selection &&
 			!clip->ownsSelection() ) {
-		clip_plus.owned = FALSE;
+		clip_star.owned = FALSE;
 	}
 }
 
