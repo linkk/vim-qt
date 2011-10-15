@@ -4,6 +4,7 @@
 #include "vimaction.h"
 #include "vimscrollbar.h"
 #include "fontdialog.h"
+#include "commandserver.h"
 
 extern "C" {
 
@@ -469,7 +470,7 @@ gui_mch_init()
 	bool useGUI = true;
 #endif
 	QApplication *app = new QApplication(__argc, __argv, useGUI);
-
+	qDebug() << __func__;
 
 	window = new MainWindow(&gui);
 
@@ -518,6 +519,9 @@ gui_mch_init()
 
 	// Background color hint
 	vimshell->setBackground(VimWrapper::backgroundColor() );
+
+	CommandServer *server = CommandServer::getInstance();
+	server->listen();
 
 	return OK;
 }
@@ -688,6 +692,9 @@ gui_mch_exit(int rc)
 	settings.setValue("state", window->saveState());
 	settings.setValue("size", window->size());
 	settings.endGroup();
+
+	CommandServer *server = CommandServer::getInstance();
+	server->close();
 
 	QApplication::quit();
 }
