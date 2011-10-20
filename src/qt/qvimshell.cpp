@@ -241,14 +241,20 @@ QFont QVimShell::fixPainterFont( const QFont& pfont )
  * - Takes a looong time
  * - FIXME: add support for proper undercurl
  */
-void QVimShell::drawStringSlow( const PaintOperation& op, QPainter &painter )
+void QVimShell::drawStringSlow( const PaintOperation& op, QPainter &rp )
 {
 	QFont f = op.font;
 	f.setUnderline(op.undercurl);
+
+	QImage img(op.rect.size(), QImage::Format_ARGB32);
+	img.fill(Qt::transparent);
+	QPainter painter(&img);
+
 	painter.setFont(f);
 	painter.setPen( op.color );
 
 	QRect rect = op.rect;
+	rect.moveTo(0,0);
 	foreach(QChar c, op.str) {
 		if ( VimWrapper::charCellWidth(c) == 1 ) {
 			rect.setWidth(VimWrapper::charWidth());
@@ -266,6 +272,11 @@ void QVimShell::drawStringSlow( const PaintOperation& op, QPainter &painter )
 		}
 		rect.moveTo( rect.x() + rect.width(), rect.y() );
 	}
+
+	rp.save();
+	rp.setRenderHints(QPainter::Antialiasing);
+	rp.drawImage(op.rect.topLeft(), img);
+	rp.restore();
 }
 
 /**
