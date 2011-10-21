@@ -250,6 +250,7 @@ void QVimShell::drawStringSlow( const PaintOperation& op, QPainter &rp )
 	img.fill(Qt::transparent);
 	QPainter painter(&img);
 
+	f.setStyleStrategy(QFont::NoAntialias);
 	painter.setFont(f);
 	painter.setPen( op.color );
 
